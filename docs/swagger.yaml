@@ -1,0 +1,562 @@
+basePath: /
+definitions:
+  models.Actor:
+    properties:
+      birthdate:
+        $ref: '#/definitions/models.CustomDate'
+      first_name:
+        type: string
+      id:
+        type: integer
+      last_name:
+        type: string
+      sex:
+        type: string
+    type: object
+  models.ActorPost:
+    properties:
+      birthdate:
+        type: string
+      first_name:
+        type: string
+      last_name:
+        type: string
+      sex:
+        type: string
+    type: object
+  models.ActorRespond:
+    properties:
+      actor:
+        $ref: '#/definitions/models.Actor'
+      films:
+        items:
+          $ref: '#/definitions/models.Film'
+        type: array
+    type: object
+  models.CustomDate:
+    properties:
+      time.Time:
+        type: string
+    type: object
+  models.Film:
+    properties:
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      rating:
+        type: integer
+      release_date:
+        $ref: '#/definitions/models.CustomDate'
+    type: object
+  models.FilmDoc:
+    properties:
+      description:
+        type: string
+      name:
+        type: string
+      rating:
+        type: integer
+      release_date:
+        type: string
+    type: object
+  models.FilmPostDoc:
+    properties:
+      actors_ids:
+        items:
+          type: integer
+        type: array
+      film:
+        $ref: '#/definitions/models.FilmDoc'
+    type: object
+  models.FilmRespond:
+    properties:
+      actors:
+        items:
+          $ref: '#/definitions/models.Actor'
+        type: array
+      film:
+        $ref: '#/definitions/models.Film'
+    type: object
+  models.FilmsSearch:
+    properties:
+      films:
+        items:
+          $ref: '#/definitions/models.Film'
+        type: array
+    type: object
+  models.GetActors:
+    properties:
+      actors:
+        items:
+          $ref: '#/definitions/models.ActorRespond'
+        type: array
+    type: object
+  models.GetFilms:
+    properties:
+      actors:
+        items:
+          $ref: '#/definitions/models.FilmRespond'
+        type: array
+    type: object
+  models.SignUpRequest:
+    properties:
+      name:
+        type: string
+      password:
+        type: string
+    type: object
+host: localhost:8888
+info:
+  contact: {}
+  title: VK backend trainee task API
+  version: "1.0"
+paths:
+  /actor/:
+    get:
+      description: Получения списка актеров
+      operationId: get-actors
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetActors'
+        "400":
+          description: error string
+          schema:
+            type: string
+        "401":
+          description: unauthtorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - BasicAuth: []
+      summary: Get actors
+      tags:
+      - actor
+    post:
+      consumes:
+      - application/json
+      description: Создание записи об актере
+      operationId: post-actor
+      parameters:
+      - description: Информация об актере
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/models.ActorPost'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: actor added
+          schema:
+            type: string
+        "400":
+          description: error string
+          schema:
+            type: string
+        "401":
+          description: unauthtorized
+          schema:
+            type: string
+        "403":
+          description: forbidden
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - BasicAuth: []
+      summary: Add actor
+      tags:
+      - actor
+  /actor/{id}:
+    delete:
+      description: Удаление актера по id
+      operationId: delete-actor
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: actor deleted
+          schema:
+            type: string
+        "400":
+          description: error string
+          schema:
+            type: string
+        "401":
+          description: unauthtorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - BasicAuth: []
+      summary: Delete actor
+      tags:
+      - actor
+    get:
+      description: Поиск актера по id
+      operationId: get-actor
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ActorRespond'
+        "400":
+          description: error string
+          schema:
+            type: string
+        "401":
+          description: unauthtorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - BasicAuth: []
+      summary: Get actor
+      tags:
+      - actor
+    put:
+      consumes:
+      - application/json
+      description: Изменение записи об актере
+      operationId: put-actor
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Информация об актере
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/models.ActorPost'
+      responses:
+        "200":
+          description: actor updated
+          schema:
+            type: string
+        "400":
+          description: error string
+          schema:
+            type: string
+        "401":
+          description: unauthtorized
+          schema:
+            type: string
+        "403":
+          description: forbidden
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - BasicAuth: []
+      summary: Update actor
+      tags:
+      - actor
+  /film/:
+    get:
+      description: Получения списка фильмов
+      operationId: get-films
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.GetFilms'
+        "400":
+          description: error string
+          schema:
+            type: string
+        "401":
+          description: unauthtorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - BasicAuth: []
+      summary: Get films
+      tags:
+      - film
+    post:
+      consumes:
+      - application/json
+      description: Создание записи об фильме
+      operationId: post-film
+      parameters:
+      - description: Информация о фильме`
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/models.FilmPostDoc'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: film added
+          schema:
+            type: string
+        "400":
+          description: error string
+          schema:
+            type: string
+        "401":
+          description: unauthtorized
+          schema:
+            type: string
+        "403":
+          description: forbidden
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - BasicAuth: []
+      summary: Add film
+      tags:
+      - film
+  /film/{id}:
+    delete:
+      description: Удаление фильма по id
+      operationId: delete-film
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "200":
+          description: film deleted
+          schema:
+            type: string
+        "400":
+          description: error string
+          schema:
+            type: string
+        "401":
+          description: unauthtorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - BasicAuth: []
+      summary: Delete film
+      tags:
+      - film
+    get:
+      description: Поиск фильма по id
+      operationId: get-film
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.FilmRespond'
+        "400":
+          description: error string
+          schema:
+            type: string
+        "401":
+          description: unauthtorized
+          schema:
+            type: string
+        "404":
+          description: not found
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - BasicAuth: []
+      summary: Get film
+      tags:
+      - film
+    put:
+      consumes:
+      - application/json
+      description: Изменение записи о фильме
+      operationId: put-film
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Информация о фильме
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/models.FilmPostDoc'
+      responses:
+        "200":
+          description: film updated
+          schema:
+            type: string
+        "400":
+          description: error string
+          schema:
+            type: string
+        "401":
+          description: unauthtorized
+          schema:
+            type: string
+        "403":
+          description: forbidden
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - BasicAuth: []
+      summary: Update film
+      tags:
+      - film
+  /search/:
+    get:
+      description: Поиск фильмов по фрагменту из названия или фрагменту имени актера,
+        который указан в титрах
+      operationId: search
+      parameters:
+      - description: искомый фрагмент
+        in: query
+        name: search_by
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.FilmsSearch'
+        "400":
+          description: error string
+          schema:
+            type: string
+        "401":
+          description: unauthtorized
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      security:
+      - BasicAuth: []
+      summary: Search
+      tags:
+      - search
+  /sign-up/:
+    post:
+      consumes:
+      - application/json
+      description: Регистрация пользователя
+      operationId: sing-up
+      parameters:
+      - description: Пароль + юзернейм
+        in: body
+        name: requestBody
+        required: true
+        schema:
+          $ref: '#/definitions/models.SignUpRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: user signed up
+          schema:
+            type: string
+        "400":
+          description: error string
+          schema:
+            type: string
+        "500":
+          description: internal server error
+          schema:
+            type: string
+      summary: Sign up
+      tags:
+      - auth
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
